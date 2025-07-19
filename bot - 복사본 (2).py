@@ -123,12 +123,7 @@ def make_raid_embed(raid, guild=None):
     if hour12 == 0:
         hour12 = 12
     dt_str = f"{dt.year}-{dt.month:02d}-{dt.day:02d} {weekday_kr} {ampm_kr} {hour12}시{dt.minute:02d}분"
-    memo = raid.get('memo', "-")
-    embed = discord.Embed(
-        title=dt_str,
-        description=memo if memo else "-",
-        color=discord.Color.blue()
-    )
+    embed = discord.Embed(title=dt_str, color=discord.Color.blue())
     embed.add_field(name="아이디", value=raid['id'], inline=True)
     embed.add_field(name="최대인원", value=f"{raid['max_member']}명", inline=True)
     member_names = []
@@ -142,6 +137,8 @@ def make_raid_embed(raid, guild=None):
             name = f"<@{user_id}>"
         member_names.append(name)
     embed.add_field(name=f"멤버 ({len(raid['members'])}/{raid['max_member']})", value="\n".join(member_names) if member_names else "-", inline=False)
+    memo = raid.get('memo', "-")
+    embed.add_field(name="메모", value=memo if memo else "-", inline=False)
     embed.add_field(name="변경사항", value=raid['log'][-1], inline=False)
     return embed
 
@@ -224,8 +221,7 @@ async def 변경(ctx, *, args):
         raid['time'] = raid_time
         raid['log'].append(f"시간이 {value}로 변경됨")
     embed = make_raid_embed(raid, guild=ctx.guild)
-    view = ParticipateView(raid, store, ctx)
-    await ctx.send(embed=embed, view=view)
+    await ctx.send(embed=embed)
 
 @bot.command()
 async def 삭제(ctx, raid_id):
@@ -269,6 +265,6 @@ async def 문토끼도움말(ctx):
         "`!레이드` - 전체 레이드 목록\n"
         "참여/취소는 v버튼으로 동작\n"
     )
-    await ctx.send(msg)
+    ##await ctx.send(msg)
 
 bot.run(os.environ["DISCORD_TOKEN"])
