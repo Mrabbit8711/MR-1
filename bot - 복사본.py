@@ -242,16 +242,17 @@ async def 레이드(ctx, raid_id=None):
             await ctx.send("해당 레이드를 찾을 수 없습니다.")
             return
         embed = make_raid_embed(raid, guild=ctx.guild)
-        view = ParticipateView(raid, store, ctx)
-        await ctx.send(embed=embed, view=view)
+        await ctx.send(embed=embed)
     else:
         if not store:
             await ctx.send("등록된 레이드가 없습니다.")
             return
-        for raid in list(store.values())[:5]:
+        embeds = []
+        for i, raid in enumerate(list(store.values())[:5]):
             embed = make_raid_embed(raid, guild=ctx.guild)
-            view = ParticipateView(raid, store, ctx)
-            await ctx.send(embed=embed, view=view)
+            embeds.append(embed)
+        for embed in embeds:
+            await ctx.send(embed=embed)
 
 @bot.command()
 async def 문토끼도움말(ctx):
@@ -266,5 +267,8 @@ async def 문토끼도움말(ctx):
         "참여/취소는 v버튼으로 동작\n"
     )
     await ctx.send(msg)
+
+
+
 
 bot.run(os.environ["DISCORD_TOKEN"])
