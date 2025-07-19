@@ -271,4 +271,27 @@ async def 문토끼도움말(ctx):
     )
     await ctx.send(msg)
 
-bot.run(os.environ["DISCORD_TOKEN"])
+import threading
+from flask import Flask
+
+# 기존 코드들 (import, bot 선언 등) ... 생략
+
+# ---- 아래 코드 추가 ----
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "OK"   # 헬스 체크용 응답
+
+def run_flask():
+    # 환경변수 PORT가 있으면 그 포트, 없으면 8080
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+# ---- 추가 끝 ----
+
+# 기존 코드들 ... (디스코드 봇 관련 함수, 커맨드 등)
+
+if __name__ == "__main__":
+    # Flask 서버를 별도의 스레드에서 실행
+    threading.Thread(target=run_flask).start()
+    # 디스코드 봇 실행
+    bot.run(os.environ["DISCORD_TOKEN"])
