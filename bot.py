@@ -265,6 +265,6 @@ async def 문토끼도움말(ctx):
         "`!레이드` - 전체 레이드 목록\n"
         "참여/취소는 v버튼으로 동작\n"
     )
-    await ctx.send(msg)
+    ##await ctx.send(msg)
 
 bot.run(os.environ["DISCORD_TOKEN"])
